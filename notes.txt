@@ -1,0 +1,11 @@
+
+entity framework
+install entityframamework tools
+
+install entityframamework designs
+ 
+migration:
+in nuget console
+
+Add-Migration InitialCreate
+Update-Database
