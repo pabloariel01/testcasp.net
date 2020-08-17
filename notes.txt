@@ -11,3 +11,8 @@ Add-Migration InitialCreate
 Update-Database
 
 repository has the db logic, it separates business logic from controller
+
+dependency injection:
+	scoped: one instance for each request(shared between methds in scope)
+	singleton:only once (may block requests)
+	transient:one for every service created
