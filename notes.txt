@@ -9,3 +9,5 @@ in nuget console
 
 Add-Migration InitialCreate
 Update-Database
+
+repository has the db logic, it separates business logic from controller
