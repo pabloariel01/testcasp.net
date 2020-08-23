@@ -6,8 +6,7 @@ install entityframamework designs
  
 migration:
 in nuget console
-
-Add-Migration InitialCreate
+Add-Migration
 Update-Database
 
 repository has the db logic, it separates business logic from controller
