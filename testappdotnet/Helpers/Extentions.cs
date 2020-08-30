@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +16,15 @@ namespace testappdotnet.Helpers
             response.Headers.Add("Access-Control-ExposeHeaders", "Application-error");
             response.Headers.Add("Access-Control-Allow-Origin", "*");
 
+        }
+
+        public static void AddPagination(this HttpResponse response, int currentPage, int itemsPerPage,int totalItems, int totalPages)
+        {
+            var paginationHeades = new PaginationHeaders(currentPage, itemsPerPage, totalItems, totalPages);
+            var camelCaseFormatter = new JsonSerializerSettings();
+            camelCaseFormatter.ContractResolver = new CamelCasePropertyNamesContractResolver();
+            response.Headers.Add("Pagination", JsonConvert.SerializeObject(paginationHeades,camelCaseFormatter));
+            response.Headers.Add("Access-Control-Allow-Origin", "Pagination");
         }
         public static int CalculateAge(this DateTime theDate)
         {
