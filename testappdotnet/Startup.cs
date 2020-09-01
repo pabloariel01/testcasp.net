@@ -35,6 +35,7 @@ namespace testappdotnet
             });
             services.AddAutoMapper(typeof(DatingRepository).Assembly);
             services.AddCors();
+            services.Configure<ClaudinarySettings>(Configuration.GetSection("CloudinarySettings"));
             services.AddScoped<IDatingRepository,DatingRepository>();
             services.AddScoped<IAuthRepository, AuthRepository>();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

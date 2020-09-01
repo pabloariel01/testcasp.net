@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using testappdotnet.Data;
 using testappdotnet.Dtos;
 using testappdotnet.Helpers;
+using testappdotnet.Models;
 
 namespace testappdotnet.Controllers
 {
@@ -46,12 +47,35 @@ namespace testappdotnet.Controllers
             return Ok(userToReturn);
         }
 
-        [HttpGet("{id}") ]
+        [HttpGet("{id}")]
         public async Task<IActionResult> getUser(int id)
         {
             var user = await _repo.GetUser(id);
             var userToReturn = _mapper.Map<UserForDetailesDto>(user);
             return Ok(userToReturn);
+        }
+
+        [HttpPost("{id}/like/{recipentId}")]
+        public async Task<IActionResult> LikeUser(int id, int recipmentId)
+        {
+            if (id != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
+                return Unauthorized();
+
+            var like = await _repo.GetLike(id, recipmentId);
+            if (like != null)
+               return BadRequest("user already liked");
+            if (await _repo.GetUser(recipmentId) == null)
+                return NotFound();
+            like = new Like
+            {
+                LikerId = id,
+                LikeeId = recipmentId
+            };
+            _repo.Add<Like>(like);
+            if (await _repo.SaveAll())
+                return Ok();
+            return BadRequest();
+
         }
     }
 }
