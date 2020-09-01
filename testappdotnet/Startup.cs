@@ -28,7 +28,12 @@ namespace testappdotnet
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<DataContext>(x => x.UseSqlServer(Configuration.GetConnectionString("DefaultConection")));
+            services.AddDbContext<DataContext>(x =>
+            {
+                x.UseLazyLoadingProxies();
+                x.UseSqlServer(Configuration.GetConnectionString("DefaultConection"));
+            }
+            );
             services.AddControllers().AddNewtonsoftJson(opt =>
             {
                 opt.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
@@ -36,7 +41,7 @@ namespace testappdotnet
             services.AddAutoMapper(typeof(DatingRepository).Assembly);
             services.AddCors();
             services.Configure<ClaudinarySettings>(Configuration.GetSection("CloudinarySettings"));
-            services.AddScoped<IDatingRepository,DatingRepository>();
+            services.AddScoped<IDatingRepository, DatingRepository>();
             services.AddScoped<IAuthRepository, AuthRepository>();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
@@ -62,7 +67,7 @@ namespace testappdotnet
             }
             else
             {
-                app.UseExceptionHandler(builder=>
+                app.UseExceptionHandler(builder =>
                 {
                     builder.Run(async context =>
                     {
@@ -73,7 +78,7 @@ namespace testappdotnet
                             context.Response.AddApplicationError(error.Error.Message);
                             await context.Response.WriteAsync(error.Error.Message);
                         }
-                    }); 
+                    });
                 });
             }
 
@@ -82,7 +87,7 @@ namespace testappdotnet
             app.UseRouting();
 
             app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
-            app.UseAuthentication(); 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
